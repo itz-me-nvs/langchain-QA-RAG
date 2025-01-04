@@ -22,6 +22,7 @@ faiss_store = FAISS.from_texts(texts, embed_model)
 
 # Step 4: Load LLaMA-2 model
 llama_model_name = "meta-llama/Llama-2-7b-chat-hf"
+light_weight_model_name="distilgpt2"; # Lightweight causal language model
 
 # Load tokenizer and model
 tokenizer = AutoTokenizer.from_pretrained(llama_model_name)
@@ -31,12 +32,18 @@ model = AutoModelForCausalLM.from_pretrained(
     device_map="auto",
 )
 
+# using lightweight model for fast performance and reduce power consumption
+# model = AutoModelForCausalLM.from_pretrained(light_weight_model_name,
+#     torch_dtype=torch.float16,  # Use float16 for better performance if using GPU
+#     device_map="auto",  # Automatically map model to available devices
+# )
+
 # Set up a HuggingFace pipeline
 pipeline_llm = pipeline(
     "text-generation",
     model=model,
     tokenizer=tokenizer,
-    # max_length=512,
+    max_length=512,
     temperature=0.7,
     top_p=0.95,
 )
@@ -54,7 +61,8 @@ qa_chain = RetrievalQA.from_chain_type(
 # print("QA Chain:", qa_chain)
 
 # Step 7: Ask a question
-query = "What is LangChain?"
+# query = "What is LangChain?"
+query = "What is 2 + 2 ?"
 # response = qa_chain({"query": query})
 
 response=qa_chain.invoke({"query": query})
