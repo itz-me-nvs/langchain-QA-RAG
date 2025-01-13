@@ -11,7 +11,10 @@ from langchain.llms import OpenAI
 
 # ollama llm model (local model)
 from langchain_community.llms import Ollama
-# from langchain_core.output_parsers import StrOutputParser
+
+from langchain_core.messages import AIMessage
+
+from langchain_core.output_parsers import StrOutputParser
 
 # Load environment variables from the .env file
 load_dotenv()
@@ -131,32 +134,46 @@ print("result 2:", docs_mmr[1].page_content[:100])
 metadata_field_info = [
     AttributeInfo(
         name="source",
-        description="The lecture the chunk is from, should be one of `docs/cs229_lectures/MachineLearning-Lecture01.pdf`, `docs/cs229_lectures/MachineLearning-Lecture02.pdf`, or `docs/cs229_lectures/MachineLearning-Lecture03.pdf`",
+        description="The source path of the document",
         type="string",
     ),
     AttributeInfo(
         name="page",
-        description="The page from the lecture",
+        description="The page number within the document.",
         type="integer",
     ),
 ]
-document_content_description = "Lecture notes"
-# llm = Ollama(model="llama3.2:latest")
-llm = OpenAI(temperature=0)
+
+
+document_content_description = "machine learning lecture documents"
+
+
+llm = Ollama(model="llama3:latest")
+# llm = OpenAI(temperature=0)
 
 retriever=SelfQueryRetriever.from_llm(
     llm,
     vectordb,
     document_content_description,
-    metadata_field_info,
+    metadata_field_info=metadata_field_info,
     verbose=True
 )
-# output_parser = StrOutputParser()
 
-# chain = llm | output_parser
+parser = StrOutputParser()
 
-question = "what did they say about regression in the third lecture?"
-docs = retriever.invoke(question)
+chain = llm | retriever | parser
+
+# question = "what did they say about regression in the third lecture?"
+question = "What is discussed in the first document?"
+
+try:
+    docs = chain.invoke(question)
+except StrOutputParser.ParseError as e:
+    print(e)
+    print("LLM output:", e.llm_output)
+    raise
+
+print("docs", len(docs))
 
 for index, doc in enumerate(docs):
     print(f"document : ${index}",doc.page_content[:100])
