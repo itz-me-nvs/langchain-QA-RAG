@@ -10,3 +10,4 @@ streamlit
 pypdf
 chromadb
 lark
+langchain-groq
