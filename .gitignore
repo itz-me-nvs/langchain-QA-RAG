@@ -1,2 +1,3 @@
 venv/
-document_rag/docs
+docs
+env
