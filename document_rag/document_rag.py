@@ -1,21 +1,21 @@
 from langchain_community.document_loaders import PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.vectorstores import Chroma
-from langchain.embeddings.openai import OpenAIEmbeddings
+# from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.embeddings import HuggingFaceEmbeddings
 from dotenv import load_dotenv
 
 from langchain.retrievers.self_query.base import SelfQueryRetriever
 from langchain.chains.query_constructor.base import AttributeInfo
-from langchain.llms import OpenAI
+# from langchain.llms import OpenAI
 
 # ollama llm model (local model)
-from langchain_community.llms import Ollama
+# from langchain_community.llms import Ollama
 
-from langchain_core.messages import AIMessage
+# from langchain_core.messages import AIMessage
 
-from langchain_core.output_parsers import JsonOutputParser
-from langchain.schema import OutputParserException, Document
+# from langchain_core.output_parsers import JsonOutputParser
+# from langchain.schema import OutputParserException, Document
 from langchain_groq import ChatGroq # type: ignore
 from langchain.retrievers import ContextualCompressionRetriever
 from langchain.retrievers.document_compressors import LLMChainExtractor
@@ -24,10 +24,6 @@ from langchain.prompts import PromptTemplate
 import os
 
 groq_api_key = os.getenv("GROQ_API_KEY")
-
-
-# custom JsonOutputParser
-
 
 # Load environment variables from the .env file
 load_dotenv()
@@ -41,9 +37,9 @@ def pretty_print_docs(docs):
 
 loaders = [
 PyPDFLoader("../docs/machinelearning-lecture01.pdf"),
-# PyPDFLoader("../docs/machinelearning-lecture01.pdf"),
-# PyPDFLoader("../docs/machinelearning-lecture02.pdf"),
-# PyPDFLoader("../docs/machinelearning-lecture03.pdf"),
+PyPDFLoader("../docs/machinelearning-lecture01.pdf"),
+PyPDFLoader("../docs/machinelearning-lecture02.pdf"),
+PyPDFLoader("../docs/machinelearning-lecture03.pdf"),
 ]
 
 docs = []
@@ -154,7 +150,8 @@ document_content_description = "Machine Learning Lecture Notes"
 
 # llm = Ollama(model="llama3:latest", base_url="http://localhost:11434")
 
-llm = ChatGroq(model_name="llama-3.3-70b-versatile",temperature=0.7)
+# llm = ChatGroq(model_name="llama-3.3-70b-versatile",temperature=0.7)
+llm = ChatGroq(model_name="gemma2-9b-it",temperature=0.7)
 compressor = LLMChainExtractor.from_llm(llm)
 
 
@@ -188,12 +185,12 @@ response = compression_retriever.invoke(question)
 
 
 
-question = "How many years Andrew Ng Worked as a machine learning researcher?"
-# docs = vectordb.similarity_search(question,k=3)
-compressed_docs = compression_retriever.get_relevant_documents(question)
+# question = "How many years Andrew Ng Worked as a machine learning researcher?"
+# # docs = vectordb.similarity_search(question,k=3)
+# compressed_docs = compression_retriever.get_relevant_documents(question)
 
-compressed_docs_result = compression_retriever.invoke(question)
-print("years worked",compressed_docs_result[0].page_content)
+# compressed_docs_result = compression_retriever.invoke(question)
+# print("years worked",compressed_docs_result[0].page_content)
 
 
 
@@ -207,17 +204,17 @@ Answer:"""
 
 QA_CHAIN_PROMPT = PromptTemplate.from_template(template) # run chain
 
-qa_chain = RetrievalQA.from_chain_type(
-    llm=llm,
-    retriever=vectordb.as_retriever(),
-    return_source_documents=True,
-    chain_type_kwargs={"prompt": QA_CHAIN_PROMPT}
-)
+# qa_chain = RetrievalQA.from_chain_type(
+#     llm=llm,
+#     retriever=vectordb.as_retriever(),
+#     return_source_documents=True,
+#     chain_type_kwargs={"prompt": QA_CHAIN_PROMPT}
+# )
 
 
-question = "What are major topics for this class?"
-result = qa_chain({"query": question})
-print("qa_chain", result["result"]) # The provided text does not explicitly mention the major topics of the class. It discusses the class structure, online resources, and assignments, but does not delve into the specific topics that will be covered. thanks for asking!
+# question = "What are major topics for this class?"
+# result = qa_chain({"query": question})
+# print("qa_chain", result["result"]) # The provided text does not explicitly mention the major topics of the class. It discusses the class structure, online resources, and assignments, but does not delve into the specific topics that will be covered. thanks for asking!
 
 
 qa_chain_mr = RetrievalQA.from_chain_type(
@@ -226,6 +223,8 @@ qa_chain_mr = RetrievalQA.from_chain_type(
     chain_type="map_reduce"
 )
 
-question = "What are major topics for this class?"
+# question = "What are major topics for this class?"
+# question = "Summurize the lecture03 document in two sentences?"
+question = "What is the total duration specified in the lecture03 document?"
 result = qa_chain_mr({"query": question})
 print("qa_chain_mr", result["result"])
