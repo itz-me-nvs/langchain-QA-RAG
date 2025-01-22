@@ -11,3 +11,6 @@ pypdf
 chromadb
 lark
 langchain-groq
+openai-whisper
+youtube-transcript-api
+pytube
