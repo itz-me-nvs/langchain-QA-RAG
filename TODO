@@ -5,6 +5,15 @@ Module 1: Make Efficient AI RAG LLM System
     3. Token Based Implementation.
     4. Topic/Heading/Chapter Wise Classification.
 
+    5. **Adjustable Summary Length**
+    - Students can select the length of the summary:
+        - Short (high-level overview).
+        - Medium (key details with context).
+        - Detailed (in-depth explanations).
+    6. **Keyword Extraction**
+    - Extracts keywords and phrases for quick reference.
+    - Includes page references for textbooks.
+
 
 Module 2: Simplified Prompt Engineering Query
 
