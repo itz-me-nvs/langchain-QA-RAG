@@ -1,19 +1,18 @@
 from langchain_community.document_loaders import PyPDFLoader
-from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.vectorstores import Chroma
 from langchain.embeddings import HuggingFaceEmbeddings
 from dotenv import load_dotenv
 
-from langchain.retrievers.self_query.base import SelfQueryRetriever
 from langchain.chains.query_constructor.base import AttributeInfo
 from langchain_groq import ChatGroq # type: ignore
-from langchain.retrievers import ContextualCompressionRetriever
 from langchain.retrievers.document_compressors import LLMChainExtractor
 from langchain.chains import RetrievalQA
-from langchain.prompts import PromptTemplate
+# from langchain.prompts import PromptTemplate
 import os
 
-groq_api_key = os.getenv("GROQ_API_KEY")
+groq_api_key = "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"
+
+# os.environ['GROQ_API_KEY'] = os.getenv("GROQ_API_KEY")
 
 # Load environment variables from the .env file
 load_dotenv()
@@ -80,7 +79,7 @@ metadata_field_info = [
 
 document_content_description = "Machine Learning Lecture Notes"
 
-llm = ChatGroq(model_name="gemma2-9b-it",temperature=0.7)
+llm = ChatGroq(model_name="gemma2-9b-it",temperature=0.7, api_key=groq_api_key)
 compressor = LLMChainExtractor.from_llm(llm)
 
 
@@ -97,7 +96,8 @@ qa_chain_mr = RetrievalQA.from_chain_type(
     chain_type="map_reduce"
 )
 
-question = "Summurize the content in the lecture 03?"
+# question = "Summurize the content in the lecture 03?"
+question = "How many times the 'cs229-qa@cs.stanford.edu12' specified in the document?"
 result = qa_chain_mr({"query": question})
 
 print("<---------------------------------------------------------------------------------->")
