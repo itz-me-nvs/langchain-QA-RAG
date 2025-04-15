@@ -99,4 +99,6 @@ qa_chain_mr = RetrievalQA.from_chain_type(
 
 question = "Summurize the content in the lecture 03?"
 result = qa_chain_mr({"query": question})
-print("qa_chain_mr", result["result"])
+
+print("<---------------------------------------------------------------------------------->")
+print("Final Result:", result["result"])
