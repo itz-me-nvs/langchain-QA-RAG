@@ -16,3 +16,14 @@ chromadb
 
 faiss-cpu  # Or faiss-gpu if you want GPU support
 sentence_transformers
+lark
+langchain-groq
+openai-whisper
+youtube-transcript-api
+pytube
+groq
+
+# multi agent packages
+
+wikipedia
+arxiv
